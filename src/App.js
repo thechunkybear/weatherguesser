@@ -297,12 +297,40 @@ function GameStats({ guesses, gameWon }) {
 
 // weather report component
 function WeatherReport({ targetCountry }) {
-  let country_info = countryData[targetCountry]
+  const [weatherData, setWeatherData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    const country_info = countryData[targetCountry];
+    
+    if (country_info && country_info.capital_lat && country_info.capital_lng) {
+      setLoading(true);
+      getWeatherData(country_info.capital_lat, country_info.capital_lng)
+        .then(data => {
+          setWeatherData(data);
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error('Error fetching weather data:', error);
+          setLoading(false);
+        });
+    }
+  }, [targetCountry]);
+
+  if (loading) {
+    return <div>Loading weather data...</div>;
+  }
+  
+  if (!weatherData) {
+    return <div>Weather data not available</div>;
+  }
+
   return (
     <div>
-      { getWeatherData(country_info.capital_lat, country_info.capital_lng) }
+      <h3>Weather Report</h3>
+      <pre>{JSON.stringify(weatherData, null, 2)}</pre>
     </div>
-  )
+  );
 }
 
 // Main App Component
