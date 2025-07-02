@@ -334,8 +334,6 @@ function WeatherReport({ targetCountry }) {
         <th>Weather Description</th>
         <th>High</th>
         <th>Low</th>
-        <th>Sunrise</th>
-        <th>Sunset</th>
         <th>Wind Speed</th>
         <th>Precipitation Total</th>
         <tbody>
@@ -343,10 +341,9 @@ function WeatherReport({ targetCountry }) {
             <tr key={index}>
               <td>{date.toLocaleDateString()}</td>
               <td>{wmoCode(weatherData.daily.weatherCode[index]).description}</td>
+              // convert temperature to fahrenheit ai!
               <td>{Math.round(weatherData.daily.temperature2mMax[index])}°C</td>
               <td>{Math.round(weatherData.daily.temperature2mMin[index])}°C</td>
-              <td>{weatherData.daily.sunrise[index].toLocaleTimeString()}</td>
-              <td>{weatherData.daily.sunset[index].toLocaleTimeString()}</td>
               <td>{Math.round(weatherData.daily.windSpeed10mMax[index])} km/h</td>
               <td>{Math.round(weatherData.daily.precipitationSum[index])} mm</td>
             </tr>
@@ -354,7 +351,6 @@ function WeatherReport({ targetCountry }) {
         </tbody>
 
       </table>
-      <pre>{JSON.stringify(weatherData, null, 2)}</pre>
     </div>
   );
 }
