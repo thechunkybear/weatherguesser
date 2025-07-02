@@ -338,93 +338,20 @@ function WeatherReport({ targetCountry }) {
         <th>Sunset</th>
         <th>Wind Speed</th>
         <th>Precipitation Total</th>
-        // populate the table using the weatherData: ai!
-        example: 
-        {
-  "daily": {
-    "time": [
-      "2025-07-02T00:00:00.000Z",
-      "2025-07-03T00:00:00.000Z",
-      "2025-07-04T00:00:00.000Z",
-      "2025-07-05T00:00:00.000Z",
-      "2025-07-06T00:00:00.000Z",
-      "2025-07-07T00:00:00.000Z",
-      "2025-07-08T00:00:00.000Z"
-    ],
-    "weatherCode": {
-      "0": 3,
-      "1": 61,
-      "2": 85,
-      "3": 3,
-      "4": 63,
-      "5": 61,
-      "6": 61
-    },
-    "temperature2mMax": {
-      "0": 5.332499980926514,
-      "1": 7.53249979019165,
-      "2": 2.632499933242798,
-      "3": 7.932499885559082,
-      "4": 8.482500076293945,
-      "5": 8.482500076293945,
-      "6": 7.082499980926514
-    },
-    "temperature2mMin": {
-      "0": 1.8825000524520874,
-      "1": 2.632499933242798,
-      "2": 1.0325000286102295,
-      "3": 1.5325000286102295,
-      "4": 3.132499933242798,
-      "5": 3.132499933242798,
-      "6": 2.3324999809265137
-    },
-    "sunrise": [
-      "2025-07-02T03:15:25.000Z",
-      "2025-07-03T03:15:07.000Z",
-      "2025-07-04T03:14:46.000Z",
-      "2025-07-05T03:14:22.000Z",
-      "2025-07-06T03:13:55.000Z",
-      "2025-07-07T03:13:26.000Z",
-      "2025-07-08T03:12:53.000Z"
-    ],
-    "sunset": [
-      "2025-07-02T11:30:50.000Z",
-      "2025-07-03T11:31:30.000Z",
-      "2025-07-04T11:32:12.000Z",
-      "2025-07-05T11:32:55.000Z",
-      "2025-07-06T11:33:40.000Z",
-      "2025-07-07T11:34:27.000Z",
-      "2025-07-08T11:35:17.000Z"
-    ],
-    "windSpeed10mMax": {
-      "0": 28.76622772216797,
-      "1": 35.712650299072266,
-      "2": 53.54447937011719,
-      "3": 39.338958740234375,
-      "4": 59.010353088378906,
-      "5": 58.03485870361328,
-      "6": 56.28562545776367
-    },
-    "precipitationHours": {
-      "0": 0,
-      "1": 12,
-      "2": 2,
-      "3": 0,
-      "4": 12,
-      "5": 17,
-      "6": 10
-    },
-    "precipitationSum": {
-      "0": 0,
-      "1": 3,
-      "2": 0.20000000298023224,
-      "3": 0,
-      "4": 12.59999942779541,
-      "5": 15.20000171661377,
-      "6": 9.100000381469727
-    }
-  }
-}
+        <tbody>
+          {weatherData.daily.time.map((date, index) => (
+            <tr key={index}>
+              <td>{date.toLocaleDateString()}</td>
+              <td>{wmoCode(weatherData.daily.weatherCode[index])}</td>
+              <td>{Math.round(weatherData.daily.temperature2mMax[index])}°C</td>
+              <td>{Math.round(weatherData.daily.temperature2mMin[index])}°C</td>
+              <td>{weatherData.daily.sunrise[index].toLocaleTimeString()}</td>
+              <td>{weatherData.daily.sunset[index].toLocaleTimeString()}</td>
+              <td>{Math.round(weatherData.daily.windSpeed10mMax[index])} km/h</td>
+              <td>{Math.round(weatherData.daily.precipitationSum[index])} mm</td>
+            </tr>
+          ))}
+        </tbody>
 
       </table>
       <pre>{JSON.stringify(weatherData, null, 2)}</pre>
