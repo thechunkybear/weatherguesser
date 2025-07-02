@@ -207,13 +207,8 @@ function GameStats({ guesses, gameWon }) {
 // Main App Component
 function App() {
   const [guesses, setGuesses] = useState([]);
-  const [targetCountry, setTargetCountry] = useState('');
+  const [targetCountry, setTargetCountry] = useState(() => getRandomCountry());
   const [gameWon, setGameWon] = useState(false);
-
-  // Initialize game on component mount
-  useEffect(() => {
-    startNewGame();
-  }, []);
 
   const startNewGame = () => {
     console.log("starting new game")
