@@ -342,7 +342,7 @@ function WeatherReport({ targetCountry }) {
           {weatherData.daily.time.map((date, index) => (
             <tr key={index}>
               <td>{date.toLocaleDateString()}</td>
-              <td>{wmoCode(weatherData.daily.weatherCode[index])}</td>
+              <td>{wmoCode(weatherData.daily.weatherCode[index]).description}</td>
               <td>{Math.round(weatherData.daily.temperature2mMax[index])}°C</td>
               <td>{Math.round(weatherData.daily.temperature2mMin[index])}°C</td>
               <td>{weatherData.daily.sunrise[index].toLocaleTimeString()}</td>
