@@ -12,14 +12,30 @@ const createCountryLookup = () => {
   
   countries.forEach(country => {
     const name = country.name.common;
+    const capitalName = country.capital && country.capital[0];
+    
+    // Find capital city coordinates
+    let capitalLat = null;
+    let capitalLng = null;
+    
+    if (capitalName && country.cca2) {
+      const capitalCity = cities.find(city => 
+        city.name === capitalName && city.country === country.cca2
+      );
+      if (capitalCity) {
+        capitalLat = capitalCity.lat;
+        capitalLng = capitalCity.lng;
+      }
+    }
+    
     lookup[name] = {
       lat: country.latlng[0],
       lng: country.latlng[1],
       code: country.cca2,
       region: country.region,
       capital: country.capital,
-      capital_lat: // join countries on cities using cca2 code and city name ai
-      capital_long: // join countries on cities using cca2 code and city name ai!
+      capital_lat: capitalLat,
+      capital_lng: capitalLng
     };
     
     // Add alternate names for better matching
