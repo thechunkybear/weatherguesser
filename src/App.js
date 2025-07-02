@@ -341,7 +341,6 @@ function WeatherReport({ targetCountry }) {
             <tr key={index}>
               <td>{date.toLocaleDateString()}</td>
               <td>{wmoCode(weatherData.daily.weatherCode[index]).description}</td>
-              // convert temperature to fahrenheit ai!
               <td>{Math.round(weatherData.daily.temperature2mMax[index])}°C</td>
               <td>{Math.round(weatherData.daily.temperature2mMin[index])}°C</td>
               <td>{Math.round(weatherData.daily.windSpeed10mMax[index])} km/h</td>
