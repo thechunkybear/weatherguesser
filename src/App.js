@@ -216,6 +216,7 @@ function App() {
   }, []);
 
   const startNewGame = () => {
+    console.log("starting new game")
     setTargetCountry(getRandomCountry());
     setGuesses([]);
     setGameWon(false);
