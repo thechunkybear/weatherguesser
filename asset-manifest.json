@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/weatherguesser/static/css/main.4290fde2.css",
+    "main.js": "/weatherguesser/static/js/main.f782cd0c.js",
+    "static/js/453.efaad02e.chunk.js": "/weatherguesser/static/js/453.efaad02e.chunk.js",
+    "index.html": "/weatherguesser/index.html",
+    "main.4290fde2.css.map": "/weatherguesser/static/css/main.4290fde2.css.map",
+    "main.f782cd0c.js.map": "/weatherguesser/static/js/main.f782cd0c.js.map",
+    "453.efaad02e.chunk.js.map": "/weatherguesser/static/js/453.efaad02e.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4290fde2.css",
+    "static/js/main.f782cd0c.js"
+  ]
+}
