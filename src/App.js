@@ -5,6 +5,7 @@ import cities from 'cities.json';
 import { getDistance } from 'geolib';
 import Fuse from 'fuse.js';
 import './App.css';
+import { fetchWeatherApi } from 'openmeteo';
 
 // Create country lookup object
 const createCountryLookup = () => {
@@ -93,6 +94,69 @@ function getDistanceCategory(distance) {
   if (distance < 6000) return 'medium';
   if (distance < 10000) return 'far';
   return 'very-far';
+}
+
+async function getWeatherData(lat, long) {
+  const params = {
+    "latitude": lat,
+    "longitude": long,
+    "daily": ["weather_code", "temperature_2m_max", "temperature_2m_min", "sunrise", "sunset", "wind_speed_10m_max", "precipitation_hours", "precipitation_sum"]
+  };
+  const url = "https://api.open-meteo.com/v1/forecast";
+  const responses = await fetchWeatherApi(url, params);
+
+  // Process first location. Add a for-loop for multiple locations or weather models
+  const response = responses[0];
+
+  // Attributes for timezone and location
+  const utcOffsetSeconds = response.utcOffsetSeconds();
+  const timezone = response.timezone();
+  const timezoneAbbreviation = response.timezoneAbbreviation();
+  const latitude = response.latitude();
+  const longitude = response.longitude();
+
+  const daily = response.daily();
+
+  const sunrise = daily.variables(3);
+  const sunset = daily.variables(4);
+
+  // Note: The order of weather variables in the URL query and the indices below need to match!
+  const weatherData = {
+    daily: {
+      time: [...Array((Number(daily.timeEnd()) - Number(daily.time())) / daily.interval())].map(
+        (_, i) => new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000)
+      ),
+      weatherCode: daily.variables(0).valuesArray(),
+      temperature2mMax: daily.variables(1).valuesArray(),
+      temperature2mMin: daily.variables(2).valuesArray(),
+      sunrise: [...Array(sunrise.valuesInt64Length())].map(
+        (_, i) => new Date((Number(sunrise.valuesInt64(i)) + utcOffsetSeconds) * 1000)
+      ),
+      sunset: [...Array(sunset.valuesInt64Length())].map(
+        (_, i) => new Date((Number(sunset.valuesInt64(i)) + utcOffsetSeconds) * 1000)
+      ),
+      windSpeed10mMax: daily.variables(5).valuesArray(),
+      precipitationHours: daily.variables(6).valuesArray(),
+      precipitationSum: daily.variables(7).valuesArray(),
+    },
+  };
+
+  // `weatherData` now contains a simple structure with arrays for datetime and weather data
+  for (let i = 0; i < weatherData.daily.time.length; i++) {
+    console.log(
+      weatherData.daily.time[i].toISOString(),
+      weatherData.daily.weatherCode[i],
+      weatherData.daily.temperature2mMax[i],
+      weatherData.daily.temperature2mMin[i],
+      weatherData.daily.sunrise[i].toISOString(),
+      weatherData.daily.sunset[i].toISOString(),
+      weatherData.daily.windSpeed10mMax[i],
+      weatherData.daily.precipitationHours[i],
+      weatherData.daily.precipitationSum[i]
+    );
+  }
+
+  return weatherData;
 }
 
 // GuessInput Component
@@ -226,6 +290,16 @@ function GameStats({ guesses, gameWon }) {
   );
 }
 
+// weather report component
+function WeatherReport({ targetCountry }) {
+  let country_info = countryData[targetCountry]
+  return (
+    <div>
+      { getWeatherData(country_info.capital_lat, country_info.capital_lng) }
+    </div>
+  )
+}
+
 // Main App Component
 function App() {
   const [guesses, setGuesses] = useState([]);
@@ -268,6 +342,8 @@ function App() {
       </header>
 
       <main className="game-container">
+        <WeatherReport targetCountry={targetCountry} />
+
         <GameStats guesses={guesses} gameWon={gameWon} />
         
         {!gameWon && (
