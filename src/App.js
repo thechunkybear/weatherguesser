@@ -13,9 +13,12 @@ const createCountryLookup = () => {
   
   countries.forEach(country => {
     const name = country.name.common;
-    const capitalName = country.capital[0];
+    const capitalName = country.capital && country.capital[0];
 
-    // remove countries which don't have a capital ai!
+    // Skip countries without a capital
+    if (!capitalName) {
+      return;
+    }
     
     // Find capital city coordinates
     let capitalLat = null;
