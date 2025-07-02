@@ -257,7 +257,7 @@ function GuessInput({ onGuess, disabled }) {
 }
 
 // GuessList Component
-function GuessList({ guesses }) {
+function GuessList({ guesses, isImperial }) {
   return (
     <div className="guess-list">
       <h3>Your Guesses ({guesses.length})</h3>
@@ -272,7 +272,7 @@ function GuessList({ guesses }) {
             >
               <span className="country-name">{guess.country}</span>
               <span className="distance">
-                {guess.distance === 0 ? '🎉 Correct!' : `${guess.distance.toLocaleString()} km`}
+                {guess.distance === 0 ? '🎉 Correct!' : `${convertDistance(guess.distance, isImperial).toLocaleString()} ${isImperial ? 'miles' : 'km'}`}
               </span>
             </div>
           ))}
@@ -297,7 +297,7 @@ function GameStats({ guesses, gameWon }) {
 }
 
 // weather report component
-function WeatherReport({ targetCountry }) {
+function WeatherReport({ targetCountry, isImperial }) {
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(false);
   
@@ -326,6 +326,10 @@ function WeatherReport({ targetCountry }) {
     return <div>Weather data not available</div>;
   }
 
+  const tempUnit = isImperial ? '°F' : '°C';
+  const distanceUnit = isImperial ? 'mph' : 'km/h';
+  const precipUnit = isImperial ? 'in' : 'mm';
+
   return (
     <div>
       <h3>Weather Report</h3>
@@ -341,10 +345,10 @@ function WeatherReport({ targetCountry }) {
             <tr key={index}>
               <td>{date.toLocaleDateString()}</td>
               <td>{wmoCode(weatherData.daily.weatherCode[index]).description}</td>
-              <td>{Math.round(weatherData.daily.temperature2mMax[index])}°C</td>
-              <td>{Math.round(weatherData.daily.temperature2mMin[index])}°C</td>
-              <td>{Math.round(weatherData.daily.windSpeed10mMax[index])} km/h</td>
-              <td>{Math.round(weatherData.daily.precipitationSum[index])} mm</td>
+              <td>{convertTemperature(weatherData.daily.temperature2mMax[index], isImperial)}{tempUnit}</td>
+              <td>{convertTemperature(weatherData.daily.temperature2mMin[index], isImperial)}{tempUnit}</td>
+              <td>{convertWindSpeed(weatherData.daily.windSpeed10mMax[index], isImperial)} {distanceUnit}</td>
+              <td>{convertPrecipitation(weatherData.daily.precipitationSum[index], isImperial)} {precipUnit}</td>
             </tr>
           ))}
         </tbody>
@@ -354,11 +358,41 @@ function WeatherReport({ targetCountry }) {
   );
 }
 
+// Unit conversion functions
+const convertTemperature = (celsius, isImperial) => {
+  if (isImperial) {
+    return Math.round((celsius * 9/5) + 32);
+  }
+  return Math.round(celsius);
+};
+
+const convertDistance = (km, isImperial) => {
+  if (isImperial) {
+    return Math.round(km * 0.621371);
+  }
+  return km;
+};
+
+const convertWindSpeed = (kmh, isImperial) => {
+  if (isImperial) {
+    return Math.round(kmh * 0.621371);
+  }
+  return Math.round(kmh);
+};
+
+const convertPrecipitation = (mm, isImperial) => {
+  if (isImperial) {
+    return (mm * 0.0393701).toFixed(2);
+  }
+  return Math.round(mm);
+};
+
 // Main App Component
 function App() {
   const [guesses, setGuesses] = useState([]);
   const [targetCountry, setTargetCountry] = useState(() => getRandomCountry());
   const [gameWon, setGameWon] = useState(false);
+  const [isImperial, setIsImperial] = useState(false);
 
   const startNewGame = () => {
     console.log("starting new game")
@@ -388,15 +422,22 @@ function App() {
     }
   };
 
+  const toggleUnits = () => {
+    setIsImperial(!isImperial);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
         <h1>🌍 Location Guessing Game</h1>
         <p>Guess the mystery country! You'll get distance hints.</p>
+        <button onClick={toggleUnits} className="units-toggle">
+          {isImperial ? 'Switch to Metric' : 'Switch to Imperial'}
+        </button>
       </header>
 
       <main className="game-container">
-        <WeatherReport targetCountry={targetCountry} />
+        <WeatherReport targetCountry={targetCountry} isImperial={isImperial} />
 
         <GameStats guesses={guesses} gameWon={gameWon} />
         
@@ -404,7 +445,7 @@ function App() {
           <GuessInput onGuess={handleGuess} disabled={gameWon} />
         )}
         
-        <GuessList guesses={guesses} />
+        <GuessList guesses={guesses} isImperial={isImperial} />
         
         {gameWon && (
           <div className="new-game-section">
