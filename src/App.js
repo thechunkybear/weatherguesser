@@ -12,7 +12,7 @@ const createCountryLookup = () => {
   
   countries.forEach(country => {
     const name = country.name.common;
-    const capitalName = country.capital && country.capital[0];
+    const capitalName = country.capital[0];
     
     // Find capital city coordinates
     let capitalLat = null;
@@ -33,7 +33,7 @@ const createCountryLookup = () => {
       lng: country.latlng[1],
       code: country.cca2,
       region: country.region,
-      capital: country.capital,
+      capital: country.capital[0],
       capital_lat: capitalLat,
       capital_lng: capitalLng
     };
@@ -43,6 +43,8 @@ const createCountryLookup = () => {
       lookup[country.name.official] = lookup[name];
     }
   });
+
+  console.log(lookup)
   
   return lookup;
 };
