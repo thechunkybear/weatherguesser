@@ -1,6 +1,7 @@
 // App.js
 import React, { useState, useEffect } from 'react';
 import countries from 'world-countries';
+import cities from 'cities.json';
 import { getDistance } from 'geolib';
 import Fuse from 'fuse.js';
 import './App.css';
@@ -15,7 +16,10 @@ const createCountryLookup = () => {
       lat: country.latlng[0],
       lng: country.latlng[1],
       code: country.cca2,
-      region: country.region
+      region: country.region,
+      capital: country.capital,
+      capital_lat: // join countries on cities using cca2 code and city name ai
+      capital_long: // join countries on cities using cca2 code and city name ai!
     };
     
     // Add alternate names for better matching
