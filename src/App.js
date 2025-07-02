@@ -58,8 +58,9 @@ function calculateDistance(country1, country2) {
 // Get random country for the game
 function getRandomCountry() {
   const randomIndex = Math.floor(Math.random() * countryNames.length);
-  return countryNames[randomIndex];
-  // log the result ai!
+  const selectedCountry = countryNames[randomIndex];
+  console.log('Random country selected:', selectedCountry);
+  return selectedCountry;
 }
 
 // Get distance category for color coding
